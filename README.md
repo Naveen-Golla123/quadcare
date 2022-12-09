@@ -6,7 +6,7 @@ See the examples here:
 
 ``` https://quadcareapis.azurewebsites.net/swagger ```
 
-![ASPNETCOREWebAPIVersions](./.github/Swagger API Version.png)
+![ASPNETCOREWebAPIVersions](./.github/Swagger_API_Version.png)
 
 ## GET All Appointments
 
