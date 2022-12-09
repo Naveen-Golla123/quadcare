@@ -1,4 +1,6 @@
 using MySqlConnector;
+using Quadcare.Respository;
+using Quadcare.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,15 +11,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("DBConnection")));
+builder.Services.AddSwaggerGen(c => {
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
+
+
+//Dependency Injection
+
+builder.Services.AddSingleton<IPatientRepository, PatientRespository>();
+builder.Services.AddSingleton<IPatientService,PatientService>();
+
+builder.Services.AddSingleton<IDoctorRepository, DoctorRespository>();
+builder.Services.AddSingleton<IDoctorService, DoctorService>();
+
+builder.Services.AddSingleton<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddSingleton<IAppointmentService, AppointmentService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

@@ -1,41 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
-using System.Data.Common;
-using WebApplication1.Models;
+using Quadcare.Services;
+using Quadcare.Models;
 namespace Quadcare.Controllers
 {
 
     [ApiController]
-    [Route("patient")]
+    [Route("api/patient")]
     public class PatientController : Controller
     {
+        private IPatientService _patientService;
 
-        private MySqlConnection dbConnection;
-
-        public PatientController(MySqlConnection connection) 
+        public PatientController(IPatientService patientService) 
         {
-            dbConnection = connection;
+            _patientService = patientService;
         }
 
-        [HttpGet(Name = "getAllPatients")]
-        public async Task<List<Person>> GetAllPatients()
+        [HttpGet("GetAllPatients")]
+        public async Task<List<Patient>> GetAllPatients()
         {
-            await dbConnection.OpenAsync();
-            var command = new MySqlCommand("SELECT * FROM Person", dbConnection);
-            var reader = await command.ExecuteReaderAsync();
-            var personInformation = new List<Person>();
-            while (await reader.ReadAsync())
-            {
-                var value = reader.GetValue(0);
-                var b = value;
-                personInformation.Add(new Person
-                {
-                     id = (int)reader.GetValue(0),
-                     name = (string)reader.GetValue(1),
-                     age = (int)reader.GetValue(2)
-                });
-            }
-            return personInformation;
+            return await _patientService.GetAllPatients();
+        }
+
+        [HttpPost("AddPatient")]
+        public Task<bool> addPatient([FromBody]Patient patient)
+        {
+            return _patientService.addPatient(patient);
+        }
+
+        [HttpPost("DeletePatient")]
+        public bool deletePatient()
+        {
+            return false;
+        }
+
+        [HttpPost("EditPatientDetails")]
+        public bool editPatientDetails()
+        {
+            return false;
         }
     }
 }
